@@ -44,8 +44,26 @@ def main ():
 
         #Achamos a,b,c e d iupiiiii
 
+        #Agora reajustamos as sequencias s e t para finalizar o trabalho
+        s.reverse()
+        t.reverse()
+        lixo = s.pop()
+        lixo = t.pop()
+
+        #corta os trecho de a a b e c a d
+        s = corta_sequencia(s,a,b)
+        t = corta_sequencia(t,c,d)
+
+        #ajusta novamente
+        s = ajuste(s)
+        t = ajuste(t)
+
+        print(s)
+        print(t)
+
         print("a: ", a, "b: ", b, "c: ", c, "d: ", d)
 
+        #score = best_score(s,t)
 
 # Informa como o programa deve ser executado
 def help():
@@ -60,6 +78,15 @@ def ajuste(x):
     for i in range(tam):
         y.append(x[i])
     return y
+
+# Resjusta as sequencias recebidas para o calculo final
+def corta_sequencia(x,ini,fim):
+    tam = len(x)
+    for i in range(ini-1):
+        lixo = x.pop(0)
+    for i in range(tam-fim):
+        lixo = x.pop()
+    return x
 
 #Recebe duas sequencias s e t e retorna b e d indices para limitação
 # de alinhamento local otimo
@@ -100,6 +127,41 @@ def encontra_limitantes(s,t):
 
     limitantes = [b,d]
     return limitantes
+
+
+def best_score(s,t):
+
+    g = -2
+    match = 1
+    mismatch = -1
+    score = 0
+
+    m = len(s) #tamanho da sequencia s
+    n = len(t) #tamanho da sequencia t
+    a = [] #lista onde calcularemos o score
+
+    for j in range(n):
+        a.append(j * g)
+    i = 1
+    while i < m:
+        old = a[0]
+        a[0] = i * g
+        j = 1
+        while j < n:
+            temp = a[j]
+            if s[i] == t[j]:
+                p = match
+            else:
+                p = mismatch
+            a[j] = max([a[j] + g, a[j-1] + g, old+p])
+            old = temp
+            j = j + 1
+        i = i + 1
+
+    return a[n-1]
+
+def best_score_reverse(s,t):
+    return 0
 
 if __name__ == "__main__":
     main()
