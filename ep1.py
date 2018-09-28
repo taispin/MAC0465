@@ -63,6 +63,8 @@ def main ():
 
         print("a: ", a, "b: ", b, "c: ", c, "d: ", d)
 
+        #print(best_score(s,t))
+        #print(best_score_reverse(s,t))
         #score = best_score(s,t)
 
 # Informa como o programa deve ser executado
@@ -134,7 +136,6 @@ def best_score(s,t):
     g = -2
     match = 1
     mismatch = -1
-    score = 0
 
     m = len(s) #tamanho da sequencia s
     n = len(t) #tamanho da sequencia t
@@ -161,7 +162,40 @@ def best_score(s,t):
     return a[n-1]
 
 def best_score_reverse(s,t):
-    return 0
+    g = -2
+    match = 1
+    mismatch = -1
+
+    lixo = s.pop(0)
+    lixo = t.pop(0)
+    s.append(0)
+    t.append(0)
+
+    m = len(s) #tamanho da sequencia s
+    n = len(t) #tamanho da sequencia t
+    a = [] #lista onde calcularemos o score
+
+    for j in range(n):
+        a.append((n-1-j) * g)
+    k = 1
+    i = m-2
+    while i >= 0:
+        old = a[n-1]
+        a[n-1] = k * g
+        k = k + 1
+        j = n-2
+        while j >= 0:
+            temp = a[j]
+            if s[i] == t[j]:
+                p = match
+            else:
+                p = mismatch
+            a[j] = max([a[j] + g, a[j+1] + g, old+p])
+            old = temp
+            j = j - 1
+        i = i - 1
+
+    return a[0]
 
 if __name__ == "__main__":
     main()
