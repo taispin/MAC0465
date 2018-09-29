@@ -55,8 +55,8 @@ def main ():
         t = corta_sequencia(t,c,d)
 
         #ajusta novamente
-        s = ajuste(s)
-        t = ajuste(t)
+        #s = ajuste(s)
+        #t = ajuste(t)
 
         print(s)
         print(t)
@@ -131,11 +131,17 @@ def encontra_limitantes(s,t):
     return limitantes
 
 
-def best_score(s,t):
+def best_score(s_orig,t_orig):
 
     g = -2
     match = 1
     mismatch = -1
+
+    s = s_orig
+    t = t_orig
+
+    s.insert(0,0)
+    t.insert(0,0)
 
     m = len(s) #tamanho da sequencia s
     n = len(t) #tamanho da sequencia t
@@ -159,15 +165,16 @@ def best_score(s,t):
             j = j + 1
         i = i + 1
 
-    return a[n-1]
+    return a
 
-def best_score_reverse(s,t):
+def best_score_reverse(s_orig,t_orig):
     g = -2
     match = 1
     mismatch = -1
 
-    lixo = s.pop(0)
-    lixo = t.pop(0)
+    s = s_orig
+    t = t_orig
+
     s.append(0)
     t.append(0)
 
@@ -195,7 +202,78 @@ def best_score_reverse(s,t):
             j = j - 1
         i = i - 1
 
-    return a[0]
+    return a
+
+
+def alinhamento(s,t,a,b,c,d):
+
+    tam = max([len(s),len(t)])
+    #garantimos que o alainhamento máximo vai ter no máximo 2x a maior sequencia
+    global alinhamento-s = [0] * (2*tam) #alinhamento em s
+    global alinhamento-t = [0] * (2*tam) #alinhamento em t
+
+def align(s,t,a,b,c,d,start,end,alin-s,alinh-t):
+
+    space = '-'
+    g = -2
+
+    #se a sequencia s está vazia
+    if len(s) == 0:
+        if len(t) != 0:
+            for i in range(len(t)):
+                alinh-t[i] = "-"
+
+    #se a sequencia t está vazia
+    elif len(t) == 0:
+        if len(s) != 0:
+            for i in range(len(s)):
+                alinh-s[i] = "-"
+
+    #ambas as sequencias não são vazias
+    elif len(s) != 0 and len(t) != 0:
+        i = (a + b)/2
+        pref-sim = best_score(s[a:i], t[c:d+1])
+        suff-sim = best_score_reverse(s[i+1:b+1], t[c:d+1])
+
+        posmax = c-1
+        typemax = space
+        vmax = pref-sim[0] + g + suff-sim[0]
+
+        j = 1
+        while j <= d-c+1:
+            if (pref-sim[j-1] + p_i_j(i,j) + suff-sim[j+1]) > vmax:
+                posmax = j
+                typemax = 's'
+                vmax = (pref-sim[j-1] + p_i_j(i,j) + suff-sim[j+1])
+
+            if (pref-sim[j] + g + suff-sim[j+1]) > vmax:
+                posmax = j
+                typemax = 'g'
+                vamx = pref-sim[j] + g + suff-sim[j+1]
+
+            j = j + 1
+
+        if typemax = 'g':
+            align(s,t,a,i-1,c,posmax,start,i,alin-s,alinh-t):
+            alin-s[middle] = s[i]
+            alin-t[middle] = '-'
+            align(s,t,i+1,b,posmax+1,d,middle +1,end,alin-s,alinh-t):
+
+        else:
+            align(s,t,a,i-1,c,posmax-1,start,middle,alin-s,alinh-t):
+            alin-s[middle] = s[i]
+            alin-t[middle] = t[posmax]
+            align(s,t,i+1,b,posmax+1,d,middle +1,end,alin-s,alinh-t):
+
+        return[alin-s,alin-t]
+
+def p_i_j(i,j,s,t):
+    if s[i] == t[j]:
+        p = 1
+    else:
+        p = -1
+
+    return p
 
 if __name__ == "__main__":
     main()
