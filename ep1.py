@@ -51,18 +51,24 @@ def main ():
         lixo = t.pop()
 
         #corta os trecho de a a b e c a d
-        s = corta_sequencia(s,a,b)
-        t = corta_sequencia(t,c,d)
+        #s = corta_sequencia(s,a,b)
+        #t = corta_sequencia(t,c,d)
 
         #ajusta novamente
         #s = ajuste(s)
         #t = ajuste(t)
 
+        s.insert(0,0)
+        t.insert(0,0)
         print(s)
         print(t)
 
         print("a: ", a, "b: ", b, "c: ", c, "d: ", d)
 
+        print("Alinhamento:")
+        res = alinhamento(s,t,a,b,c,d)
+        print(res[0])
+        print(res[1])
         #print(best_score(s,t))
         #print(best_score_reverse(s,t))
         #score = best_score(s,t)
@@ -209,63 +215,73 @@ def alinhamento(s,t,a,b,c,d):
 
     tam = max([len(s),len(t)])
     #garantimos que o alainhamento máximo vai ter no máximo 2x a maior sequencia
-    global alinhamento-s = [0] * (2*tam) #alinhamento em s
-    global alinhamento-t = [0] * (2*tam) #alinhamento em t
+    alinhamento_s = [0] * (2*tam) #alinhamento em s
+    alinhamento_t = [0] * (2*tam) #alinhamento em t
 
-def align(s,t,a,b,c,d,start,end,alin-s,alinh-t):
+    res = align(s,t,a,b,c,d,alinhamento_s,alinhamento_t)
+
+    return res
+
+def align(s,t,a,b,c,d,alin_s,alin_t):
 
     space = '-'
     g = -2
 
     #se a sequencia s está vazia
-    if len(s) == 0:
-        if len(t) != 0:
-            for i in range(len(t)):
-                alinh-t[i] = "-"
+    if a > b:
+        if c <= d:
+            for i in range(d - c + 1):
+                alin_t[c+i] = s[c+i] #acertar em que indices colocar isso
+                alin_s[c+i] = "-"
 
     #se a sequencia t está vazia
-    elif len(t) == 0:
-        if len(s) != 0:
-            for i in range(len(s)):
-                alinh-s[i] = "-"
+    elif c > d:
+        if a <= b:
+            for i in range(b - a + 1):
+                alin_s[a+i] = s[a+i]
+                alin_t[a+i] = "-" #acertar onde colocar esses indices
 
     #ambas as sequencias não são vazias
-    elif len(s) != 0 and len(t) != 0:
+    elif a <= b and c <= d:
         i = (a + b)/2
-        pref-sim = best_score(s[a:i], t[c:d+1])
-        suff-sim = best_score_reverse(s[i+1:b+1], t[c:d+1])
 
+        pref_sim = best_score(s[a:i],t[c:d+1])
+        suff_sim = best_score_reverse(s[i+1:b+1],t[c:d+1])
         posmax = c-1
-        typemax = space
-        vmax = pref-sim[0] + g + suff-sim[0]
+        typemax = 's'
+
+        #coloco um gap com s[i] e alinho t[c...d] com o que está à direita
+        vmax = pref_sim[0] + g + suff_sim[0]
 
         j = 1
+        #procuro t[j] que quero alinhar com s[i]
         while j <= d-c+1:
-            if (pref-sim[j-1] + p_i_j(i,j) + suff-sim[j+1]) > vmax:
+            if (pref_sim[j-1] + p_i_j(i,j,s,t) + suff_sim[j]) > vmax:
                 posmax = j
                 typemax = 's'
-                vmax = (pref-sim[j-1] + p_i_j(i,j) + suff-sim[j+1])
+                vmax = (pref_sim[j-1] + p_i_j(i,j,s,t) + suff_sim[j])
 
-            if (pref-sim[j] + g + suff-sim[j+1]) > vmax:
+            if (pref_sim[j] + g + suff_sim[j]) > vmax:
                 posmax = j
                 typemax = 'g'
-                vamx = pref-sim[j] + g + suff-sim[j+1]
+                vamx = pref_sim[j] + g + suff_sim[j]
 
             j = j + 1
 
-        if typemax = 'g':
-            align(s,t,a,i-1,c,posmax,start,i,alin-s,alinh-t):
-            alin-s[middle] = s[i]
-            alin-t[middle] = '-'
-            align(s,t,i+1,b,posmax+1,d,middle +1,end,alin-s,alinh-t):
-
+        #casei s[i] com t[j]
+        if typemax == 's':
+            align(s,t,a,i-1,c,posmax-1,alin_s,alin_t)
+            alin_s[i] = s[i]
+            alin_t[i] = t[posmax]
+            align(s,t,i+1,b,posmax+1,d,alin_s,alin_t)
+        #casei s[i] com um gap
         else:
-            align(s,t,a,i-1,c,posmax-1,start,middle,alin-s,alinh-t):
-            alin-s[middle] = s[i]
-            alin-t[middle] = t[posmax]
-            align(s,t,i+1,b,posmax+1,d,middle +1,end,alin-s,alinh-t):
+            align(s,t,a,i-1,c,posmax,alin_s,alin_t)
+            alin_s[i] = s[i]
+            alin_t[i] = '-'
+            align(s,t,i+1,b,posmax+1,d,alin_s,alin_t)
 
-        return[alin-s,alin-t]
+        return[alin_s,alin_t]
 
 def p_i_j(i,j,s,t):
     if s[i] == t[j]:
