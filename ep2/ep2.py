@@ -3,7 +3,7 @@
 # MAC0465 - Biologia Computacional
 # NOME: Tais Pinheiro
 # NUSP: 7580421
-# Exercício Programa 1 - Alinhador Local Otimo
+# Exercício Programa 2 - Alinhador Multiplo Otimo
 
 import sys
 
@@ -12,62 +12,15 @@ def main ():
     if len(sys.argv) != 1:
         help()      # Executar sem todos os argumentos necessários mostra ajuda
         sys.exit()
-    elif len(sys.argv) == 1:
 
-        #Recebe as sequencias s e t como strings
-        s = raw_input('\nInforme a sequencia s: ')
-        t = raw_input('\nInforme a sequencia t: ')
-        s = s.upper()
-        s = ajuste(s)
-        t = t.upper()
-        t = ajuste(t)
+    else:
+        print('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
 
-        #Encontra os limitantes b e d
-        limitantes = encontra_limitantes(s,t)
-        b = limitantes[0]
-        d = limitantes[1]
-
-        #Encontra os limitantes a e c
-        #Inverte as sequencias primeiro
-        s.reverse()
-        t.reverse()
-        #remove o ultimo elemento inserido no ajuste anterior
-        lixo = s.pop()
-        lixo = t.pop()
-        #reajusta as listas invertidas
-        s = ajuste(s)
-        t = ajuste(t)
-
-        limitantes = encontra_limitantes(s,t)
-        a = limitantes[0]
-        c = limitantes[1]
-
-        #Achamos a,b,c e d iupiiiii
-
-        #Agora reajustamos as sequencias s e t para finalizar o trabalho
-        s.reverse()
-        t.reverse()
-        lixo = s.pop()
-        lixo = t.pop()
-
-        s.insert(0,0)
-        t.insert(0,0)
-
-        print("\nOs valores de a, b, c e d são:\n")
-        print('a: ', a)
-        print('b: ', b)
-        print('c: ', c)
-        print('d: ', d)
-
-        print("\nAlinhamento:\n")
-        res = alinhamento(s,t,a,b,c,d)
-        print(res[0])
-        print(res[1])
 
 # Informa como o programa deve ser executado
 def help():
-    print('\n[EXECUÇÃO DO EP1] python ep1.py')
-    print('\nSiga as orientações que você vê na tela para informar as Sequencias s e t.')
+    print('\nEXECUÇÃO DO EP2: python ep2.py')
+    print('\nSiga as orientações que você vê na tela para informar os dados de entrada.\n')
 
 # Ajusta as sequencias recebidas para o formato do algoritmo
 def ajuste(x):
