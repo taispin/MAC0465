@@ -14,31 +14,65 @@ def main ():
         sys.exit()
 
     else:
-        print('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
+        entrada = raw_input('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
+        #print(entrada.split())
+        parametros = ajuste_parametros(entrada)
 
+        r = parametros[0]
+        q = parametros[1]
+        g = parametros[2]
+        k = parametros[3]
+
+        print(r)
+        print(q)
+        print(g)
+        print(k)
+
+        tamanhos = []
+        sequencias = []
+
+        tamanhos = define_tamanhos(k,parametros[4])
+        sequencias = parametros[4]
+        sequencias.insert(0,0)
+
+        print('\nSequencias e seus tamanhos:\n')
+        print(sequencias)
+        print(tamanhos)
+
+        #Agora eu tenho os parametros e sequencias.
+        #Próximo passo: Como montar a matriz
 
 # Informa como o programa deve ser executado
 def help():
     print('\nEXECUÇÃO DO EP2: python ep2.py')
     print('\nSiga as orientações que você vê na tela para informar os dados de entrada.\n')
 
-# Ajusta as sequencias recebidas para o formato do algoritmo
-def ajuste(x):
-    tam = len(x)
-    y =[]
-    y.append(0)
-    for i in range(tam):
-        y.append(x[i])
-    return y
+# Recebe uma string e extrai os parametros de entrada
+def ajuste_parametros(entrada):
+    lista = entrada.split()
 
-# Resjusta as sequencias recebidas para o calculo final
-def corta_sequencia(x,ini,fim):
-    tam = len(x)
-    for i in range(ini-1):
-        lixo = x.pop(0)
-    for i in range(tam-fim):
-        lixo = x.pop()
-    return x
+    #Parametros inteiros
+    r = int(lista[0])
+    q = int(lista[1])
+    g = int(lista[2])
+    k = int(lista[3])
+
+    #Sequencias
+    sequencias = lista[4:]
+
+    return[r,q,g,k,sequencias]
+
+
+#Recebe um numero k e uma lista com k sequencias
+#Devolve uma lista em que cada indice i tem o tamanho da sequencia sequencias[i]
+def define_tamanhos(k, sequencias):
+
+    tamanhos = []
+    tamanhos.append(0)
+    for i in range(k):
+        tamanhos.append(len(sequencias[i]))
+
+    return tamanhos
 
 #Recebe duas sequencias s e t e retorna b e d indices para limitação
 # de alinhamento local otimo
