@@ -1,0 +1,37 @@
+USO:
+
+Para compilar:
+
+	Não é necessário compilar
+
+
+Para executar o ep1.py no terminal:
+ 	 
+ 	- python ep1.py
+
+_______________________
+
+OBSERVAÇÃO:
+
+	- Eh necessaria instalacao previa da linguagem Python 2.7
+
+
+_______________________
+
+COMO EXECUTAR:
+
+Após executar o ep peo terminal, informar as duas sequencias.
+O resultado mostrará os pontos a,b,c e d, além do alinhamento.
+
+Uma ilustração de como executar está se encontra junto com os arquivos.
+
+Pelos testes os valores de a,b,c e d estão corretos, mas não consegui acertar a posição exata dos 
+indices para montar o alinhamento ótimo :(
+
+___________________
+
+AUTORA:
+
+Taís Pinheiro (7580421)
+
+
