@@ -14,8 +14,8 @@ def main ():
         sys.exit()
 
     else:
-        entrada = raw_input('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
-        #print(entrada.split())
+        #entrada = raw_input('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
+        entrada = "2 1 0 3 atc cgga cact"
         parametros = ajuste_parametros(entrada)
 
         r = parametros[0]
@@ -33,11 +33,13 @@ def main ():
 
         tamanhos = define_tamanhos(k,parametros[4])
         sequencias = parametros[4]
-        sequencias.insert(0,0)
+        sequencias.insert(0,str(0))
 
         print('\nSequencias e seus tamanhos:\n')
         print(sequencias)
         print(tamanhos)
+
+        monta_matriz(k,sequencias,tamanhos)
 
         #Agora eu tenho os parametros e sequencias.
         #Próximo passo: Como montar a matriz
@@ -73,6 +75,64 @@ def define_tamanhos(k, sequencias):
         tamanhos.append(len(sequencias[i]))
 
     return tamanhos
+
+def monta_matriz(k,sequencias, tamanhos):
+    for i in range(k):
+        sequencias[i+1] = str(0) + sequencias[i+1][0:]
+        #Numero de celulas na matriz M = (n1+1)*(n2+1)*...*(nk+1)
+        #Formato da Matriz M = ((n1+1)*...*(nk-1 +1))x(nk+1)
+    i = 1
+    #O numero de colunas eh o tamanho da ultima sequencia
+    colunas = tamanhos[k]+1
+
+    #O numero de linhas eh o produtos das demais sequencias
+    linhas = 1
+    while i <= k-1:
+        linhas = linhas * (tamanhos[i]+1)
+        i = i + 1
+
+    #Montamos a matriz m
+    m = ['x']*linhas
+    for i in range(linhas):
+        m[i] = ['x']*colunas
+
+    celulas = linhas * colunas
+    print(linhas)
+    print(colunas)
+    mostra_matriz(m,linhas)
+
+    print(sequencias)
+
+def escreve_recursivo(id, sequencias, gravar, celulas, k, m):
+
+    #base da recursão
+    if id == k+1:
+        col = gravar[k-1]
+
+        i = 1
+        while i <= (k-1):
+            celulas = (celulas / tamanhos[i])*(gravar[i-1]+1)
+
+        linha = celulas/colunas
+        m[linha][col] = gravar
+
+
+    #recursão
+    else:
+        tam = len(sequencias[id])
+        tam_prox = = len(sequencias[id+1])
+
+        for i in range(tam):
+            gravar.append(i)
+            for j in range(tam_prox):
+                escreve_recursivo(id+1, sequencias, gravar, k, m)
+
+    return m
+
+
+def mostra_matriz(m,linhas):
+    for i in range(linhas):
+        print(m[i])
 
 #Recebe duas sequencias s e t e retorna b e d indices para limitação
 # de alinhamento local otimo
