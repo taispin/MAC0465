@@ -15,7 +15,7 @@ def main ():
 
     else:
         #entrada = raw_input('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
-        entrada = "2 1 0 3 atc cgga cact"
+        entrada = "2 1 0 4 atc cgga cact atc"
         parametros = ajuste_parametros(entrada)
 
         r = parametros[0]
@@ -125,7 +125,7 @@ def escreve_recursivo(id, sequencias, tamanhos, gravar, linhas, colunas, k, m):
         while i < k:
             linhas_total = linhas_total/(tamanhos[i-1]+1)
             linha_maxima_2 = (linhas_total/(tamanhos[i]+1)) * (gravar[i-1]+1)
-            lin = linha_maxima_1 - ((tamanhos[i]+1)-linha_maxima_2)
+            lin = linha_maxima_1 - (linhas_total - linha_maxima_2)
             linha_maxima_1 = lin
 
             i = i+1
