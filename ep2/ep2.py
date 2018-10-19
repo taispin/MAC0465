@@ -23,16 +23,17 @@ def main ():
         g = parametros[2]
         k = parametros[3]
 
-        print(r)
-        print(q)
-        print(g)
-        print(k)
-
         tamanhos = []
         sequencias = []
+        sequencias = list(parametros[4])
 
-        tamanhos = define_tamanhos(k,parametros[4])
-        sequencias = parametros[4]
+        print('r: '+str(r))
+        print('q: '+str(q))
+        print('g: '+str(g))
+        print('k: '+str(k))
+
+        tamanhos = define_tamanhos(k,sequencias)
+
         sequencias.insert(0,str(0))
 
         print('\nSequencias e seus tamanhos:\n')
@@ -77,11 +78,13 @@ def define_tamanhos(k, sequencias):
     return tamanhos
 
 def monta_matriz(k,sequencias, tamanhos):
+
     #acrescentei a subsequencia vazia para cada sequencia
     for i in range(k):
         sequencias[i+1] = str(0) + sequencias[i+1][0:]
-        #Numero de celulas na matriz M = (n1+1)*(n2+1)*...*(nk+1)
-        #Formato da Matriz M = ((n1+1)*...*(nk-1 +1))x(nk+1)
+
+    #Numero de celulas na matriz M = (n1+1)*(n2+1)*...*(nk+1)
+    #Formato da Matriz M = ((n1+1)*...*(nk-1 +1))x(nk+1)
 
     #O numero de colunas eh o tamanho da ultima sequencia
     colunas = tamanhos[k]+1
@@ -102,62 +105,55 @@ def monta_matriz(k,sequencias, tamanhos):
     celulas = linhas * colunas
 
     negocio = []
-    m = escreve_recursivo(1, sequencias, tamanhos, negocio, celulas, colunas, k, m)
+    m = escreve_recursivo(1, sequencias, tamanhos, negocio, linhas, colunas, k, m)
     mostra_matriz(m)
 
-#essa funcao não funciona
-def escreve_recursivo(id, sequencias, tamanhos, gravar, celulas, colunas, k, m):
+
+def escreve_recursivo(id, sequencias, tamanhos, gravar, linhas, colunas, k, m):
 
     #base da recursão
     if id == k+1:
         col = gravar[k-1]
+        lin = gravar[0]
 
-        i = 1
-        cel = celulas
-        while i <= (k-1):
-            cel = (cel / (tamanhos[i]+1))*(gravar[i-1]+1)
-            i = i + 1
+        #nao estou conseguindo determinar o i para k = 2.
+        #no exeplo funciona com #lin = ((cel/colunas)-1)+(gravar[0]*colunas)
+        linha_maxima_1 = (linhas/(tamanhos[1]+1)) * (gravar[0]+1)
+        linhas_total = linhas
 
-        lin = (cel/colunas)-1
+        i = 2
+        while i < k:
+            linhas_total = linhas_total/(tamanhos[i-1]+1)
+            linha_maxima_2 = (linhas_total/(tamanhos[i]+1)) * (gravar[i-1]+1)
+            lin = linha_maxima_1 - ((tamanhos[i]+1)-linha_maxima_2)
+            linha_maxima_1 = lin
+
+            i = i+1
+
+        print(gravar)
+
+        if k > 2:
+            lin = lin - 1
         print(lin)
         print(col)
-        aux = []
-        aux = gravar
-        m[lin][col] = aux
-        aux = []
-
-        print('******\n')
-        print(gravar)
-        mostra_matriz(m)
-        entrada = raw_input('\ngo\n')
-
-
+        if(m[lin][col] == 'x'):
+            m[lin][col] = list(gravar)
 
     #recursão
-    else:
+    elif id <= k:
         tam = len(sequencias[id])
-        if id < k:
-            tam_prox = len(sequencias[id+1])
 
-            for i in range(tam):
-                gravar.append(i)
-                for j in range(tam_prox):
-                    escreve_recursivo(id+1, sequencias, tamanhos, gravar, celulas, colunas, k, m)
-                lixo = gravar.pop()
-
-        else:
-            for i in range(tam):
-                gravar.append(i)
-                escreve_recursivo(id+1, sequencias, tamanhos, gravar, celulas, colunas, k, m)
-                lixo = gravar.pop()
+        for i in range(tam):
+            gravar.append(i)
+            escreve_recursivo(id+1, sequencias, tamanhos, gravar, linhas, colunas, k, m)
+            lixo = gravar.pop()
 
     return m
-
 
 def mostra_matriz(m):
     for i in range(len(m)):
         print(m[i])
-        print('-----------')
+        #print('-----------')
 
 #Recebe duas sequencias s e t e retorna b e d indices para limitação
 # de alinhamento local otimo
