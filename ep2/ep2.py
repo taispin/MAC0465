@@ -202,6 +202,34 @@ def gerador_recursivo(id, k, lista_delta, delta):
 
     return lista_delta
 
+# ------> testar a partir daqui
+# Calcula o score de uma coluna com k caracteres
+def pontua_coluna(k, coluna, r, q, g):
+
+    for i in range(k):
+        score = score + pontua(k,i,coluna,r,q,g)
+
+    return 0
+
+def pontua(k,ini,coluna, r, q, g):
+
+    score = 0
+
+    for i in range(k - ini):
+        if coluna[ini] == coluna[ini+i+1]:
+            if coluna[ini] == '-':
+                score = score + 0
+            else:
+                score = score + r
+        else:
+            if coluna[ini] == '-':
+                score = score + g
+            elif coluna[ini+i+1] == '-':
+                score = score + g
+            else:
+                score = score + q
+    return score
+
 def mostra_matriz(m):
     for i in range(len(m)):
         print(m[i])
