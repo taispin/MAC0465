@@ -6,6 +6,7 @@
 # Exercício Programa 2 - Alinhador Multiplo Otimo
 
 import sys
+import numpy as np
 
 ### MAIN
 def main ():
@@ -14,8 +15,7 @@ def main ():
         sys.exit()
 
     else:
-        #entrada = raw_input('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
-        entrada = "2 1 1 3 atc cgga cact"
+        entrada = raw_input('\nInforme: r q g k e k sequencias que serão alinhadas:\n\n')
         parametros = ajuste_parametros(entrada)
 
         r = parametros[0]
@@ -29,6 +29,7 @@ def main ():
         m = []
         v = []
         c = []
+        s = []
         sequencias = list(parametros[4])
 
         print('r: '+str(r))
@@ -40,28 +41,50 @@ def main ():
 
         sequencias.insert(0,str(0))
 
-        print('\nSequencias e seus tamanhos:\n')
-        print(sequencias)
-        print(tamanhos)
-
         m = monta_matriz(k,sequencias,tamanhos)
         v = preenche_matriz(k, tamanhos)
         c = preenche_controle(k, tamanhos)
+        s = preenche_sequencia(k, tamanhos)
         deltas = gerador_de_deltas(k)
-        print(deltas)
-        print(pontua_coluna(k, ['-','G','-'], r, q, g))
 
-        print(calcula_alinhamento_otimo(m, v,c, tamanhos,k, r, q, g))
-
-        #Agora eu tenho os parametros e sequencias.
-        #Próximo passo: Como montar a matriz
+        calcula_alinhamento_otimo(m, v,c, s, tamanhos,sequencias, k, r, q, g)
 
 # Informa como o programa deve ser executado
 def help():
     print('\nEXECUÇÃO DO EP2: python ep2.py')
     print('\nSiga as orientações que você vê na tela para informar os dados de entrada.\n')
 
-def calcula_alinhamento_otimo(m,v, c, tamanhos, k, r, q, g):
+def monta_alinhamento(max, s, k):
+
+    linhas = len(s)
+    colunas = len(s[0])
+
+    mostrar = []
+    indice = [0]*k
+    for i in range(k):
+        indice[i] = str(i+1) + ':'
+
+    mostrar.append(indice)
+
+    posl = linhas - 1
+    posc = colunas - 1
+
+    while (posl + posc) !=  0:
+        col = s[posl][posc][1]
+        mostrar.insert(1,col)
+        posl = s[posl][posc][0][0]
+        posc = s[posl][posc][0][1]
+
+    print("O alinhamento ótimo tem valor: " + str(max))
+    print("O alinhamento ótimo é dado por: ")
+
+    a = np.array(mostrar)
+
+    b = a.transpose()
+
+    print(b)
+
+def calcula_alinhamento_otimo(m,v, c, s, tamanhos, sequencias, k, r, q, g):
 
     p = []
     #gera todas as variaçoes de deltas
@@ -72,16 +95,13 @@ def calcula_alinhamento_otimo(m,v, c, tamanhos, k, r, q, g):
     for i in range(len(m)):
         for j in range(len(m[i])):
             if (i + j) != 0:
-                print("entrei aqui")
-                [atual,c, v] = calcula_otimo_q(m[i][j], p, v, c, tamanhos, k, r,q,g)
-                otimo = otimo + atual
+                [c, v, s] = calcula_otimo_q(m[i][j], p, v, c, s, tamanhos, sequencias, k, r,q,g)
 
 
-    return otimo
+    monta_alinhamento(v[i][j], s, k)
 
-def calcula_otimo_q(ponto_q, p, v, c, tamanhos, k, r, q, g):
+def calcula_otimo_q(ponto_q, p, v, c, s, tamanhos, sequencias, k, r, q, g):
 
-    print(ponto_q)
     zeros = 1
     max = 0
     for i in range(k):
@@ -95,52 +115,52 @@ def calcula_otimo_q(ponto_q, p, v, c, tamanhos, k, r, q, g):
     else:
         verificar_delta = []
         verificar_delta = list(deltas_validos(ponto_q,p,k))
+
         verificar_p = []
         verificar_p = list(p_validos(ponto_q,verificar_delta,k))
 
+        colun = []
 
         [linq, colq] = (posicao(ponto_q, len(v), tamanhos, k))
-        print([linq, colq])
+
 
         [lin, col] = posicao(verificar_p[0], len(v), tamanhos, k)
-        coluna_p = list(c[lin][col])
 
-        print(coluna_p)
+        coluna_p = c[lin][col]
 
-        #---> parei aqui
-        peso = w(ponto_q,verificar_p[0], coluna_p, k, r, q, g)[0]
+        peso = w(ponto_q,verificar_p[0], coluna_p, sequencias, k, r, q, g)[0]
         max = v[lin][col] + peso
 
         for i in range(len(verificar_p)):
             [lin, col] = posicao(verificar_p[i], len(v), tamanhos, k)
             coluna_p = list(c[lin][col])
-            peso = w(ponto_q,verificar_p[i], coluna_p, k, r, q, g)[0]
+            [peso, nova, colun] = w(ponto_q,verificar_p[i], coluna_p, sequencias, k, r, q, g)
             valor = v[lin][col] + peso
-            if valor > max:
+            if valor >= max:
                 max = valor
-                nova = list(w(ponto_q,verificar_p[i], coluna_p, k, r, q, g)[1])
                 c[linq][colq] = list(nova)
-                v[linq][colq] = max
+                v[linq][colq] = int(max)
+                s[linq][colq] = [list([lin,col]),list(colun)]
 
+    return [list(c), list(v), list(s)]
 
-    return [max, c, v]
 #devolve o valor w para dois pontos p e q e o controle dos caracteres
 # das sequencias
-def w(ponto_q,ponto_p,coluna_p, k, r, q, g):
+def w(ponto_q,ponto_p,coluna_p, sequencias, k, r, q, g):
 
     coluna = [0]*k
-    nova = [0]*(k+1)
+    nova = [0]*k
 
-    i = 1
-    while i <= k:
-        if (ponto_q[i-1] - ponto_p[i-1]) == 0:
-            coluna[i-1] = '-'
+
+    for i in range(k):
+        if (ponto_q[i] - ponto_p[i]) == 0:
+            coluna[i] = '-'
             nova[i] = coluna_p[i]
         else:
             nova[i] = coluna_p[i] + 1
-            coluna[i] = sequencas[i][coluna_p[i]+1]
+            coluna[i] = sequencias[i+1][coluna_p[i]+1]
 
-    return [pontua_coluna(k,coluna,r,q,g), nova]
+    return [pontua_coluna(k,coluna,r,q,g), nova, coluna]
 
 
 def deltas_validos(ponto, verificar, k):
@@ -155,12 +175,11 @@ def deltas_validos(ponto, verificar, k):
             validos.append(list(verificar[i]))
 
         inclui = 1
+
     return validos
 
 def p_validos(ponto, verificar, k):
 
-    print(ponto)
-    print(verificar)
     validos = []
     incluir = [0]*k
     for i in range(len(verificar)):
@@ -168,7 +187,6 @@ def p_validos(ponto, verificar, k):
             incluir[j] = ponto[j] - verificar[i][j]
         validos.append(list(incluir))
 
-    print(validos)
     return validos
 
 
@@ -202,8 +220,6 @@ def define_tamanhos(k, sequencias):
 
 def posicao(ponto, linhas, tamanhos, k):
 
-    print("chegeui")
-    print(ponto)
     col = ponto[k-1]
     lin = ponto[0]
 
@@ -223,8 +239,6 @@ def posicao(ponto, linhas, tamanhos, k):
     if k > 2:
         lin = lin - 1
 
-
-    print([lin, col])
     return [lin, col]
 
 
@@ -257,7 +271,6 @@ def monta_matriz(k,sequencias, tamanhos):
 
     negocio = []
     m = escreve_recursivo(1, sequencias, tamanhos, negocio, linhas, colunas, k, m)
-    mostra_matriz(m)
 
     return m
 
@@ -287,8 +300,7 @@ def escreve_recursivo(id, sequencias, tamanhos, gravar, linhas, colunas, k, m):
 
         if k > 2:
             lin = lin - 1
-        #print(lin)
-        #print(col)
+
         if(m[lin][col] == 'x'):
             m[lin][col] = list(gravar)
 
@@ -317,13 +329,12 @@ def preenche_matriz(k,tamanhos):
         linhas = linhas * (tamanhos[i]+1)
         i = i + 1
 
-    v = ['x']*linhas
+    v = [0]*linhas
     for i in range(linhas):
-        v[i] = ['x']*colunas
+        v[i] = [0]*colunas
 
     v[0][0] = 0
 
-    mostra_matriz(v)
     return v
 
 def preenche_controle(k,tamanhos):
@@ -345,9 +356,28 @@ def preenche_controle(k,tamanhos):
 
     c[0][0] = [0]*k
 
-    mostra_matriz(c)
-
     return c
+
+def preenche_sequencia(k,tamanhos):
+    s = []
+
+    #O numero de colunas eh o tamanho da ultima sequencia
+    colunas = tamanhos[k]+1
+
+    #O numero de linhas eh o produtos das demais sequencias
+    linhas = 1
+    i = 1
+    while i <= k-1:
+        linhas = linhas * (tamanhos[i]+1)
+        i = i + 1
+
+    s = [0]*linhas
+    for i in range(linhas):
+        s[i] = [0]*colunas
+
+    s[0][0] = [[0,0],[0,0]]
+
+    return s
 
 def gerador_de_deltas(k):
     deltas = []

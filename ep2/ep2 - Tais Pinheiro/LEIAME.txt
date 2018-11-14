@@ -1,0 +1,42 @@
+USO:
+
+Para compilar:
+
+	Não é necessário compilar
+
+
+Para executar o ep2.py no terminal:
+ 	 
+ 	- python ep2.py
+
+_______________________
+
+OBSERVAÇÃO:
+
+	- Eh necessaria instalacao previa da linguagem Python 2.7
+	- Eh necessaria instalacao previa da biblioteca numpy do Python 
+	para instaçaõa use: pip install numpy
+
+
+_______________________
+
+COMO EXECUTAR:
+
+Após executar 'python ep2.py' no terminal, você deve inserir os parametros r q g k e k sequencias que serão alinhadas S1 S2 S3 ... Sk
+
+Por exemplo: 1 0 -1 3 ATC CGGA CACT
+
+É necessário usar espaços entre os parâmetros e não virgula, ponto ou algo do tipo. O ep não faz tratamento de erros nos parâmetros.
+
+Uma ilustração de como executar está se encontra junto com os arquivos.
+
+No exemplo no enunciado o professor parece esquecer de inserir o número k que está descrito. 
+
+
+___________________
+
+AUTORA:
+
+Taís Pinheiro (7580421)
+
+

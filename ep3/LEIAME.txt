@@ -5,9 +5,9 @@ Para compilar:
 	Não é necessário compilar
 
 
-Para executar o ep2.py no terminal:
+Para executar o ep1.py no terminal:
  	 
- 	- python ep2.py
+ 	- python ep1.py
 
 _______________________
 
@@ -20,13 +20,13 @@ _______________________
 
 COMO EXECUTAR:
 
-Após executar 'python ep2.py' no terminal, você deve inserir os parametros r q g k e k sequencias que serão alinhadas S1 S2 S3 ... Sk
-
-É necessário usar espaços entre os parâmetros e não virgula, ponto ou algo do tipo. O ep não faz tratamento de erros nos parâmetros.
+Após executar o ep peo terminal, informar as duas sequencias.
+O resultado mostrará os pontos a,b,c e d, além do alinhamento.
 
 Uma ilustração de como executar está se encontra junto com os arquivos.
 
-
+Pelos testes os valores de a,b,c e d estão corretos, mas não consegui acertar a posição exata dos 
+indices para montar o alinhamento ótimo :(
 
 ___________________
 
