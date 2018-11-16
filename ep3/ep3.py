@@ -17,7 +17,10 @@ def main ():
     else:
         #entrada = raw_input('\nInforme um limiar inteiro t e o conjunto de strings separadas por espaços:\n\n')
 
-        entrada = "3 AGTATTGGCAATC AATCGATG ATGCAAACCT CCTTTTGG TTGGCAATCACT"
+        entrada = "3 AGTATTGGCAATC AATCGATG ATGCAAACCT CCTTTTGG TTGGCAATCACT" #TTGGXAATCG"
+
+        print('\nProcessando...\n')
+
         print('entrada: ' + entrada)
         parametros = ajuste_parametros(entrada)
         nstrings = len(parametros[1])
@@ -34,10 +37,61 @@ def main ():
         matriz = list(matriz_adjacencias(strings, nstrings, t))
         mostra_matriz(matriz)
 
-        #mostra_parametros(parametros)
-        print('\nProcessando...\n')
+        ciclo = verifica_ciclos(matriz, nstrings)
 
+        if ciclo == 1:
+            print('\n\n Exception!\n\nO grafo possui ciclo. Programa abortado!\n')
 
+        else:
+            print("keep going")
+# Determina quais vértices estão ligados ao vertice r
+def encontra_territorio(adj, n, r):
+    #branco = -1
+    #cinza = 0
+    #preto = 1
+    cor = []
+    lista = []
+
+    #todos os vertices soa brancos
+    for i in range(n):
+        cor.append(-1)
+
+    #o vertice r é cinza
+    cor[r] = 0
+
+    #insere r na lista
+    lista.append(r)
+
+    #enquanto a lista não estiver vazia
+    while len(lista) > 0:
+        #tiro o primeiro elemento da lista e verifico a quem ele se liga
+        u = lista.pop(0)
+        for i in range(n):
+            if adj[u][i] > 0:
+                #se elemento ainda não foi inserido na lista
+                if cor[i] == -1:
+                    #elemento fica cinza e inserido na lista
+                    cor[i] = 0
+                    lista.append(i)
+        #u fica preto
+        cor[u] = 1
+
+    return cor
+
+#Dada uma matri m representando um grafo, verifica se exite um ciclo.
+def verifica_ciclos(m,n):
+    ciclo = 0
+    territorio = []
+    for i in range(n):
+        territorio = list(encontra_territorio(m,n,i))
+
+        for j in range(n):
+            #se está no territorio e existe uma aresta de retorno
+            if territorio[j] == 1 and m[j][i] > 0:
+                ciclo = 1
+                j = n
+
+    return ciclo
 
 #Recebe as strings de entrada e montra uma matriz de adjacencias reperesentando o grafo
 def matriz_adjacencias(strings, n, t):
