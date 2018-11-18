@@ -6,7 +6,6 @@
 # Exercício Programa 3 - Reconstrução de uma supersequência comum ao nível t.
 
 import sys
-import numpy as np
 
 ### MAIN
 def main ():
@@ -15,35 +14,83 @@ def main ():
         sys.exit()
 
     else:
-        #entrada = raw_input('\nInforme um limiar inteiro t e o conjunto de strings separadas por espaços:\n\n')
-
-        entrada = "3 AGTATTGGCAATC AATCGATG ATGCAAACCT CCTTTTGG TTGGCAATCACT" #TTGGXAATCG"
+        entrada = raw_input('\nInforme um limiar inteiro t e o conjunto de strings separadas por espaços:\n\n')
 
         print('\nProcessando...\n')
 
-        print('entrada: ' + entrada)
         parametros = ajuste_parametros(entrada)
         nstrings = len(parametros[1])
 
         t = parametros[0]
         strings = parametros[1]
         tamanhos = parametros[2]
-        print(tamanhos)
-
-        eq = compara_strings(strings[0],strings[4], t)
-        print('igualdade: [' + str(eq) + ']')
 
         matriz = []
+        adj = []
         matriz = list(matriz_adjacencias(strings, nstrings, t))
-        mostra_matriz(matriz)
+        adj = list(matriz_adjacencias(strings, nstrings, t))
 
         ciclo = verifica_ciclos(matriz, nstrings)
 
+        #Se o grafo possui ciclos temos uma exceção
         if ciclo == 1:
             print('\n\n Exception!\n\nO grafo possui ciclo. Programa abortado!\n')
 
+        #Caso contrario procuramos um caminho hamiltoniano
         else:
-            print("keep going")
+            topologico = []
+            topologico = list(topological_sorting(matriz, nstrings))
+            print_supersequencia(topologico, strings, adj)
+
+
+#Ordenação topologica
+def topological_sorting(m, n):
+    l = [] #lista que ira conter os elementos ordenados
+    s = [] #conjunto de todos os nós sem aresta de entrada
+
+    adj = m
+    s = list(sem_aresta_entrada(adj,n))
+
+    # enquanto s não esta vazia
+    while(len(s) > 0):
+        no = s.pop(0) #retiro um no de s
+        l.append(no) #insiro em l
+        # para cada no m com uma aresta e de n até m  remova a aresta e do grafo
+        for i in range(n):
+            if adj[no][i] > 0:
+                adj[no][i] = 0
+                soma = 0
+                for k in range(n):
+                    soma = soma + adj[k][i]
+                if soma == 0:
+                    s.append(i)
+
+    return l
+
+def print_supersequencia(l,strings, adj):
+
+    sequencia = strings[l[0]]
+
+    for i in range(len(l)-1):
+        limite = adj[l[i]][l[i+1]]
+        sequencia = sequencia + strings[l[i+1]][limite:]
+
+    print('\nA supersequencia das variáveis dada é:\n\n')
+    print(sequencia)
+
+def sem_aresta_entrada(m,n):
+
+    result = []
+
+    for i in range(n):
+        soma = 0
+        for j in range(n):
+            soma = soma + m[j][i]
+        if soma == 0:
+            result.append(i)
+
+    return result
+
 # Determina quais vértices estão ligados ao vertice r
 def encontra_territorio(adj, n, r):
     #branco = -1

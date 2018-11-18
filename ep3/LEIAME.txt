@@ -5,9 +5,9 @@ Para compilar:
 	Não é necessário compilar
 
 
-Para executar o ep1.py no terminal:
+Para executar o ep3.py no terminal:
  	 
- 	- python ep1.py
+ 	- python ep3.py
 
 _______________________
 
@@ -20,13 +20,30 @@ _______________________
 
 COMO EXECUTAR:
 
-Após executar o ep peo terminal, informar as duas sequencias.
-O resultado mostrará os pontos a,b,c e d, além do alinhamento.
+Após executar o ep pelo terminal, deve-se informar o limiar t e as strings separadas por espaços.
+O resultado mostrará a supersequencia que acomodará as strings
 
-Uma ilustração de como executar está se encontra junto com os arquivos.
+Uma ilustração de como executar se encontra junto com os arquivos.
 
-Pelos testes os valores de a,b,c e d estão corretos, mas não consegui acertar a posição exata dos 
-indices para montar o alinhamento ótimo :(
+
+_______________________
+
+TESTES:
+
+
+* Testando com o exemplo do livro a entrada seria:
+
+3 AGTATTGGCAATC AATCGATG ATGCAAACCT CCTTTTGG TTGGCAATCACT
+
+O Resultado para essa entrada é: AGTATTGGCAATCGATGCAAACCTTTTGGCAATCACT
+
+* Testando com o exemplo com ciclo seria:
+
+3 AGTATTGGCAATC AATCGATG ATGCAAACCT CCTTTTGG TTGGCAATCACT TTGGXAATCG
+
+O Resultado para essa entrada é: Exception!
+
+				O grafo possui ciclo. Programa abortado!
 
 ___________________
 
